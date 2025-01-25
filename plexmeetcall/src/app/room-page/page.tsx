@@ -159,13 +159,13 @@ function RoomPage() {
   ]);
 
   return (
-    <div className="p-5 h-screen w-screen bg-[#BAD2D9]">
+    <div className="p-5 h-screen w-screen roomPageBg">
       <Navbar />
       <h1 className="text-center text-[#353B51] text-xl font-semibold">
         {remoteSocketId ? "Connected" : "No one in room"}
       </h1>
-      <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-5">
+      <div className="flex sm:flex-row flex-col items-center justify-between">
+        <div className="flex flex-col sm:w-[500px] w-[300px] gap-5">
           {myStream && (
             <>
               <span className="text-2xl text-[#353B51] font-semibold">You</span>
@@ -175,12 +175,12 @@ function RoomPage() {
                 playing
                 muted
                 url={myStream}
-                className="rounded-lg border border-black"
+                className="rounded-lg border sm:w-[500px] w-[300px] border-black"
               />
             </>
           )}
         </div>
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col sm:w-[500px] w-[300px] gap-5">
           {remoteStream && (
             <>
               <span className="text-2xl text-right text-[#353B51] font-semibold">

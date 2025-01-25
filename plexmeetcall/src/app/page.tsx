@@ -56,26 +56,29 @@ export default function Home() {
       <div className="relative p-3">
         <Navbar />
       </div>
-      <div className="relative flex gap-32 items-center">
+      <div className="relative flex sm:flex-row flex-col sm:gap-32 gap-5 items-center">
         <HomeImage />
-        <div className="relative right-0 flex flex-col gap-5">
+        <div className="relative right-0 flex flex-col gap-5 sm:p-0 p-3">
           <div className="flex flex-col gap-2">
-            <span className="text-5xl text-[#353B51] font-bold">
+            <span className="sm:text-5xl text-2xl text-[#353B51] font-bold">
               Video calls and meetings
             </span>
-            <span className="text-5xl text-[#353B51] font-bold">
+            <span className="sm:text-5xl text-2xl text-[#353B51] font-bold">
               for everyone
             </span>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="text-[#737373] text-3xl">
+            <span className="sm:text-[#737373] text-[#353b51cc] sm:text-3xl text-md">
               Connect, Collaborate and celebrate from
             </span>
-            <span className="text-[#737373] text-3xl">
+            <span className="sm:text-[#737373] text-[#353b51cc] sm:text-3xl text-md">
               anywhere with Plex Meet
             </span>
           </div>
-          <form className="flex gap-5" onSubmit={handleSubmit}>
+          <form
+            className="flex gap-5 sm:flex-row flex-col"
+            onSubmit={handleSubmit}
+          >
             <TextField
               variant="outlined"
               label="Email"
@@ -87,6 +90,7 @@ export default function Home() {
                 ),
               }}
               size="small"
+              className="w-[350px] sm:w-auto"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -101,6 +105,7 @@ export default function Home() {
                 ),
               }}
               size="small"
+              className="w-[350px] sm:w-auto"
               value={roomCode}
               onChange={(e) => setRoomCode(e.target.value)}
             />
@@ -108,12 +113,13 @@ export default function Home() {
               variant="contained"
               type="submit"
               size="small"
+              className="w-[350px] sm:w-auto"
               sx={{ backgroundColor: "#353B51" }}
             >
               Enter
             </Button>
           </form>
-          <div className="w-[500px] border-b-2 border-black"></div>
+          <div className="sm:w-[500px] w-[350px]  border-b-2 border-black "></div>
         </div>
       </div>
     </div>
