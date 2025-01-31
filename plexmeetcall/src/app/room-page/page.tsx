@@ -31,8 +31,14 @@ interface NegotiationIncoming {
 function RoomPage() {
   const socket = useSocket();
   const [remoteSocketId, setRemoteSocketId] = useState<string | null>(null);
-  const [myStream, setMyStream] = useState<MediaStream>();
-  const [remoteStream, setRemoteStream] = useState<MediaStream>();
+  const [myStream, setMyStream] = useState<MediaStream | null>(null);
+  const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  // Ensure rendering only after hydration
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleUserJoined = useCallback(({ email, id }: UserJoin) => {
     console.log(`Email ${email} joined room with id ${id}`);
@@ -40,23 +46,25 @@ function RoomPage() {
   }, []);
 
   const handleCallUser = useCallback(async () => {
-    if (typeof window !== "undefined" && navigator.mediaDevices) {
+    try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true,
       });
+      setMyStream(stream);
       const offer = await peer.getOffer();
       socket?.emit("user:call", {
         to: remoteSocketId,
         offer,
       });
-      setMyStream(stream);
+    } catch (error) {
+      console.error("Error accessing media devices:", error);
     }
   }, [remoteSocketId, socket]);
 
   const handleIncomingCall = useCallback(
     async ({ from, offer }: IncomingCall) => {
-      if (typeof window !== "undefined" && navigator.mediaDevices) {
+      try {
         setRemoteSocketId(from);
         const stream = await navigator.mediaDevices.getUserMedia({
           video: true,
@@ -69,6 +77,8 @@ function RoomPage() {
           to: from,
           answer,
         });
+      } catch (error) {
+        console.error("Error handling incoming call:", error);
       }
     },
     [socket]
@@ -76,9 +86,9 @@ function RoomPage() {
 
   const sendStream = useCallback(() => {
     if (myStream) {
-      for (const track of myStream.getTracks()) {
+      myStream.getTracks().forEach((track) => {
         peer.peer.addTrack(track, myStream);
-      }
+      });
     }
   }, [myStream]);
 
@@ -126,8 +136,7 @@ function RoomPage() {
   useEffect(() => {
     if (peer?.peer) {
       const trackHandler = (e: RTCTrackEvent) => {
-        const remoteStream = e.streams[0];
-        setRemoteStream(remoteStream);
+        setRemoteStream(e.streams[0]);
       };
       peer.peer.addEventListener("track", trackHandler);
       return () => {
@@ -158,20 +167,22 @@ function RoomPage() {
     handleNegotiationFinal,
   ]);
 
+  if (!isClient) return null; // Prevents SSR hydration mismatch
+
   return (
     <div className="p-5 h-screen w-screen roomPageBg">
       <Navbar />
       <h1 className="text-center text-[#353B51] text-xl font-semibold">
         {remoteSocketId ? "Connected" : "No one in room"}
       </h1>
-      <div className="flex sm:flex-row flex-col items-center justify-between">
+      <div className="flex sm:flex-row flex-col items-start gap-5 justify-between p-2">
         <div className="flex flex-col sm:w-[500px] w-[300px] gap-5">
           {myStream && (
             <>
               <span className="text-2xl text-[#353B51] font-semibold">You</span>
               <ReactPlayer
                 height="240px"
-                width="500px"
+                width="370px"
                 playing
                 muted
                 url={myStream}
@@ -180,7 +191,7 @@ function RoomPage() {
             </>
           )}
         </div>
-        <div className="flex flex-col sm:w-[500px] w-[300px] gap-5">
+        <div className="flex flex-col sm:items-end sm:w-[500px] w-[300px] gap-5">
           {remoteStream && (
             <>
               <span className="text-2xl text-right text-[#353B51] font-semibold">
@@ -188,7 +199,7 @@ function RoomPage() {
               </span>
               <ReactPlayer
                 height="240px"
-                width="500px"
+                width="370px"
                 playing
                 muted
                 url={remoteStream}
