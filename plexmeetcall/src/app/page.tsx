@@ -68,10 +68,10 @@ export default function Home() {
             </span>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="sm:text-[#737373] text-[#353b51cc] sm:text-3xl text-md">
+            <span className="text-black text-[#353b51cc] sm:text-3xl text-md">
               Connect, Collaborate and celebrate from
             </span>
-            <span className="sm:text-[#737373] text-[#353b51cc] sm:text-3xl text-md">
+            <span className="text-black text-[#353b51cc] sm:text-3xl text-md">
               anywhere with Plex Meet
             </span>
           </div>
