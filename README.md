@@ -26,7 +26,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/Harshjs-Gupta/PlexMeet2">
-    <img src="/plexmeetcall/public/plexMeet.png" alt="Logo" width="80" height="80">
+    <img src="/plexmeetcall/public/plexMeet.png" alt="Logo" width="90" height="90">
   </a>
 
   <h3 align="center">PlexMeet</h3>
