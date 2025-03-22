@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "NODE_ENV=production node server-prod.js",
-    "dev:socket": "nodemon server.js",
+    "start": "NODE_ENV=production node --experimental-specifier-resolution=node server-prod.js",
+    "dev:socket": "nodemon --exec node --experimental-specifier-resolution=node server.js",
     "lint": "next lint"
   },
   "dependencies": {

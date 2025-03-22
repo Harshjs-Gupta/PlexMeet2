@@ -1,15 +1,13 @@
 import { NextResponse } from "next/server";
 
-// Socket.io server is handled in middleware.ts
+// Socket.io server is handled in the custom server (server.js/server-prod.js)
+// using the implementation from ./io/route.ts
 
 // Export GET handler
 export async function GET() {
   return new NextResponse("Socket.io server running", { status: 200 });
 }
 
-// Export a global config for the Edge API route
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// Set dynamic rendering and Node.js runtime
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";

@@ -1,36 +1,31 @@
-import { Server } from "socket.io";
+// @ts-check
+import { createServer } from "http";
+import next from "next";
+// Use explicit extension for ESM compatibility
+import { initSocketServer } from "./src/lib/socket-server.js";
 
-const io = new Server(8000, {
-  cors: true,
-});
+const port = parseInt(process.env.PORT || "3000", 10);
+const dev = process.env.NODE_ENV !== "production";
+const app = next({ dev });
+const handle = app.getRequestHandler();
 
-const emailToSocketIdMap = new Map();
-const socketIdToEmailMap = new Map();
+app.prepare().then(() => {
+  const server = createServer((req, res) => {
+    // API route to handle Socket.io
+    if (req.url && req.url.startsWith("/api/socket")) {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ message: "Socket.io server running" }));
+      return;
+    }
 
-io.on("connection", (socket) => {
-  console.log("Socket connected", socket.id);
-  socket.on("room:join", (data) => {
-    console.log(data);
-    const { email, roomCode } = data;
-    emailToSocketIdMap.set(email, socket.id);
-    socketIdToEmailMap.set(socket.id, email);
-    io.to(roomCode).emit("user:joined", { email, id: socket.id });
-    socket.join(roomCode);
-    io.to(socket.id).emit("room:join", data);
+    // Let Next.js handle all other routes
+    handle(req, res);
   });
 
-  socket.on("user:call", ({ to, offer }) => {
-    io.to(to).emit("incoming:call", { from: socket.id, offer });
-  });
-  socket.on("call:accepted", ({ to, answer }) => {
-    io.to(to).emit("call:accepted", { from: socket.id, answer });
-  });
+  // Initialize Socket.io using our centralized setup
+  initSocketServer(server);
 
-  socket.on("peer:negotiation:needed", ({ to, offer }) => {
-    io.to(to).emit("peer:negotiation:needed", { from: socket.id, offer });
-  });
-
-  socket.on("peer:nego:done", ({ to, answer }) => {
-    io.to(to).emit("peer:nego:final", { from: socket.id, answer });
+  server.listen(port, () => {
+    console.log(`> Ready on http://localhost:${port}`);
   });
 });

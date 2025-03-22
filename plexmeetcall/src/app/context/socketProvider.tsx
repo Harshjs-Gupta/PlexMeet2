@@ -30,12 +30,7 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
       : "http://localhost:3000");
 
   const socket = useMemo(() => {
-    // In development, connect to localhost:8000
-    if (process.env.NODE_ENV === "development") {
-      return io("http://localhost:8000");
-    }
-
-    // In production, connect to the same domain with proper path
+    // In development, use the same server with Socket.io path
     return io(socketServerUrl, {
       path: "/api/socket/io",
     });
