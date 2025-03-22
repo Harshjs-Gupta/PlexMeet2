@@ -1,4 +1,3 @@
-import { NextApiRequest } from "next";
 import { NextResponse } from "next/server";
 import { Server as SocketIOServer } from "socket.io";
 
@@ -10,12 +9,12 @@ interface JoinRoomData {
 
 interface CallOfferData {
   to: string;
-  offer: any;
+  offer: RTCSessionDescriptionInit;
 }
 
 interface CallAnswerData {
   to: string;
-  answer: any;
+  answer: RTCSessionDescriptionInit;
 }
 
 // Store for user connections
@@ -26,7 +25,7 @@ const socketIdToEmailMap = new Map<string, string>();
 let io: SocketIOServer;
 
 // This function can't directly run in Edge runtime
-export async function GET(req: Request) {
+export async function GET() {
   // Just a placeholder for API route
   return NextResponse.json({ message: "Socket.io server endpoint" });
 }
@@ -37,7 +36,7 @@ export const config = {
 
 // This code will be used in _middleware.ts or pages/api/socketio.js
 // to initialize Socket.io in a non-Edge environment
-export function initSocketServer(server: any) {
+export function initSocketServer(server: import("http").Server) {
   if (!io) {
     console.log("Initialize Socket.io server");
 

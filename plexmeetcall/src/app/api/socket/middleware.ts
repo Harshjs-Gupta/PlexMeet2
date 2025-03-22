@@ -1,14 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Server as ServerIO } from "socket.io";
+import { Server as HTTPServer } from "http";
 
 // Define a type for the Socket.io server
-export interface SocketServer extends NextApiResponse {
+export type SocketServer = NextApiResponse & {
   socket: {
-    server: {
+    server: HTTPServer & {
       io?: ServerIO;
     };
   };
-}
+};
 
 // Define the middleware function to set up Socket.io
 export const socketMiddleware = async (
