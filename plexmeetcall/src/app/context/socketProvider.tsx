@@ -22,7 +22,24 @@ interface SocketProviderProps {
 }
 
 export const SocketProvider = ({ children }: SocketProviderProps) => {
-  const socket = useMemo(() => io("http://localhost:8000"), []);
+  // Use environment variables for server URL or fallback to local development URL
+  const socketServerUrl =
+    process.env.NEXT_PUBLIC_SOCKET_SERVER_URL ||
+    (typeof window !== "undefined"
+      ? window.location.origin
+      : "http://localhost:3000");
+
+  const socket = useMemo(() => {
+    // In development, connect to localhost:8000
+    if (process.env.NODE_ENV === "development") {
+      return io("http://localhost:8000");
+    }
+
+    // In production, connect to the same domain with proper path
+    return io(socketServerUrl, {
+      path: "/api/socket/io",
+    });
+  }, [socketServerUrl]);
 
   return (
     <SocketContext.Provider value={{ socket }}>

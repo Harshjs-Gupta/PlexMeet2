@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server-prod.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": ["**/*"]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/socket/io/(.*)",
+      "dest": "/server-prod.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/server-prod.js"
+    }
+  ]
+}
