@@ -8,6 +8,7 @@
     "build": "next build",
     "start": "NODE_ENV=production node --experimental-specifier-resolution=node server-prod.js",
     "dev:socket": "nodemon --exec node --experimental-specifier-resolution=node server.js",
+    "deploy": "next build && NODE_ENV=production node --experimental-specifier-resolution=node server-prod.js",
     "lint": "next lint"
   },
   "dependencies": {
